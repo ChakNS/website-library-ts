@@ -6,6 +6,11 @@ const router = createRouter({
   history: createWebHashHistory(), // hash模式：createWebHashHistory，history模式：createWebHistory
   routes: [
     {
+      path: '/404',
+      component: (): Promise<typeof import('*.vue')> =>
+        import(/* webpackChunkName: "index" */ '@/pages/default/404')
+    },
+    {
       path: '/',
       redirect: '/library-info',
       component: Main,
@@ -18,7 +23,11 @@ const router = createRouter({
         }
       ]
     },
-    ...Tools
+    ...Tools,
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/404'
+    }
   ]
 })
 
