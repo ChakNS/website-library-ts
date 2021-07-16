@@ -92,64 +92,67 @@
     </a-layout>
   </a-layout>
 </template>
-<script>
-import { defineComponent, reactive, toRefs } from "vue";
-import { useRouter } from "vue-router";
-import Iconfont from "_c/iconfont";
-import Menu from "@/config/menu";
+<script lang="ts">
+import { defineComponent, reactive, toRefs } from 'vue'
+import { useRouter } from 'vue-router'
+import Iconfont from '_c/iconfont/iconfont.vue'
+import Menu from '@/config/menu'
+import { MenuConfig, ReactiveData } from './config'
+
 export default defineComponent({
   components: {
-    Iconfont,
+    Iconfont
   },
   setup() {
-    const router = useRouter();
-    const state = reactive({
-      activeMain: ["1"],
-      activeSecondary: ["1001"],
+    const router = useRouter()
+    const data: ReactiveData = {
+      activeMain: ['1'],
+      activeSecondary: ['1001'],
       collapsed: false,
-      theme: "light",
+      theme: 'light',
       menuList: Menu,
-      currTopMenu: [],
-    });
+      currTopMenu: []
+    }
+    const state:ReactiveData = reactive(data)
     // 改变主题
-    const changeTheme = (checked) => {
-      state.theme = checked ? "light" : "dark";
-    };
+    const changeTheme = (checked: boolean): void => {
+      state.theme = checked ? 'light' : 'dark'
+    }
     // 点击菜单跳转
-    const handleNavigate = (type, { key }) => {
-      let target;
-      if (type === "sider") {
-        target = state.menuList.find((item) => item.menuId == key);
+    const handleNavigate = (type: string, { key = 0 }) => {
+      let target: MenuConfig
+      if (type === 'sider') {
+        target = state.menuList.find((item) => item.menuId === key) || state.menuList[0]
         state.currTopMenu =
           target && target.children && target.children.length
             ? target.children
-            : [target];
-        state.activeSecondary = [state.currTopMenu[0].menuId + ""];
-        router.push({ name: state.currTopMenu[0].name });
+            : [target]
+        state.activeSecondary = [state.currTopMenu[0].menuId + '']
+        router.push({ name: state.currTopMenu[0].name })
       } else {
-        target = state.currTopMenu.find((item) => item.menuId == key);
-        router.push(target.name);
+        target = state.currTopMenu.find((item) => item.menuId === key) || state.menuList[0]
+        router.push(target.name)
       }
-    };
+    }
     // 初始化菜单 排序
     const init = () => {
-      state.menuList.sort((a, b) => a.urlOrder - b.urlOrder);
+      state.menuList.sort((a, b) => a.urlOrder - b.urlOrder)
       state.menuList.forEach((parent) => {
-        parent.children.sort((a, b) => a.urlOrder - b.urlOrder);
-      });
+        parent.children.sort((a, b) => a.urlOrder - b.urlOrder)
+      })
       state.currTopMenu =
         state.menuList[0].children && state.menuList[0].children.length
           ? state.menuList[0].children
-          : [state.menuList[0]];
-    };
-    init();
+          : [state.menuList[0]]
+    }
+    init()
     return {
       ...toRefs(state),
       changeTheme,
-      handleNavigate,
-    };
-  },
-});
+      handleNavigate
+    }
+  }
+})
 </script>
 <style lang="scss" scoped>
 .main-sider {
