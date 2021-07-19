@@ -4,10 +4,6 @@
 
 <script>
 export default {
-  name: "App",
-};
+  name: 'App'
+}
 </script>
-
-<style lang="scss">
-@import "./common/style/common.scss";
-</style>

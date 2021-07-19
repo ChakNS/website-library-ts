@@ -41,7 +41,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "@/common/style/theme.scss";
 .grid-menu-item-container {
   :deep(.ant-card-body) {
     height: 150px;
