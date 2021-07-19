@@ -1,31 +1,21 @@
 <template>
   <div class="common-container tools-list-container">
-    <a-row :gutter="16">
-      <a-col
-        class="gutter-row"
-        v-for="item in ToolsList"
-        :key="item.title"
-        :xs="24"
-        :sm="24"
-        :md="12"
-        :lg="12"
-        :xl="12"
-        :xxl="8"
-      >
-        <tools-item :detail="item" @click="$router.push({ name: item.name })" />
-      </a-col>
-    </a-row>
+    <grid-menu-list>
+      <grid-menu-item :detail="item" v-for="item in ToolsList" :key="item.title" @click="$router.push({ name: item.name })" />
+    </grid-menu-list>
   </div>
 </template>
 
 <script lang="ts">
-import { ToolsList } from './config'
-import ToolsItem from './components/toolsItem'
 import { defineComponent } from 'vue'
+import GridMenuList from '_c/gridMenuList'
+import GridMenuItem from '_c/gridMenuItem'
+import { ToolsList } from './config'
 export default defineComponent({
   name: 'Home',
   components: {
-    ToolsItem
+    GridMenuList,
+    GridMenuItem
   },
   data () {
     return {

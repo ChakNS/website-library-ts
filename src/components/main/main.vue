@@ -14,77 +14,33 @@
         <div class="logo-container">
           <img src="@/assets/images/logo.png" alt="logo" />
         </div>
-        <span
-          :class="[
-            `logo-text-${collapsed ? 'hide' : 'show'}`,
-            `${theme}-color`,
-          ]"
-          >Website Library</span
-        >
+        <span :class="[`logo-text-${collapsed ? 'hide' : 'show'}`, `${theme}-color`]">Website Library</span>
       </div>
       <a-menu
         v-model:selectedKeys="activeMain"
-        :style="[
-          !collapsed && theme === 'light' ? { borderRight: 'none' } : '',
-        ]"
+        :style="[!collapsed && theme === 'light' ? { borderRight: 'none' } : '']"
         :theme="theme"
         mode="inline"
         @select="handleNavigate('sider', $event)"
       >
         <a-menu-item v-for="item in menuList" :key="item.menuId + ''">
-          <iconfont
-            :name="item.icon"
-            class="menu-icon"
-            size="20"
-            :color="theme === 'dark' ? '#fff' : '#001529'"
-          />
-          <span :class="[`menu-text-${collapsed ? 'hide' : 'show'}`]">{{
-            item.title
-          }}</span>
+          <iconfont :name="item.icon" class="menu-icon" size="20" :color="theme === 'dark' ? '#fff' : '#001529'" />
+          <span :class="[`menu-text-${collapsed ? 'hide' : 'show'}`]">{{ item.title }}</span>
         </a-menu-item>
       </a-menu>
     </a-layout-sider>
     <a-layout>
       <!-- 顶栏 -->
-      <a-layout-header
-        class="main-header"
-        :style="{ width: `calc(100% - ${collapsed ? '80px' : '200px'})` }"
-      >
+      <a-layout-header class="main-header" :style="{ width: `calc(100% - ${collapsed ? '80px' : '200px'})` }">
         <!-- 展开图标 -->
-        <div
-          :class="['trigger', `${theme}-bcg`]"
-          :style="{ borderColor: theme === 'dark' ? '#001529' : '#f0f0f0' }"
-          @click="collapsed = !collapsed"
-        >
-          <iconfont
-            v-if="collapsed"
-            name="zhankai"
-            size="24"
-            :color="theme === 'dark' ? '#fff' : '#001529'"
-          />
-          <iconfont
-            v-else
-            name="shouqi"
-            size="24"
-            :color="theme === 'dark' ? '#fff' : '#001529'"
-          />
+        <div :class="['trigger', `${theme}-bcg`]" :style="{ borderColor: theme === 'dark' ? '#001529' : '#f0f0f0' }" @click="collapsed = !collapsed">
+          <iconfont v-if="collapsed" name="zhankai" size="24" :color="theme === 'dark' ? '#fff' : '#001529'" />
+          <iconfont v-else name="shouqi" size="24" :color="theme === 'dark' ? '#fff' : '#001529'" />
         </div>
         <!-- 二级目录 -->
-        <a-menu
-          v-model:selectedKeys="activeSecondary"
-          :theme="theme"
-          mode="horizontal"
-          @select="handleNavigate('top', $event)"
-        >
-          <a-menu-item v-for="item in currTopMenu" :key="item.menuId + ''">{{
-            item.title
-          }}</a-menu-item>
-          <a-switch
-            checked-children="light"
-            un-checked-children="dark"
-            :checked="theme === 'light'"
-            @change="changeTheme"
-          />
+        <a-menu v-model:selectedKeys="activeSecondary" :theme="theme" mode="horizontal" @select="handleNavigate('top', $event)">
+          <a-menu-item v-for="item in currTopMenu" :key="item.menuId + ''">{{ item.title }}</a-menu-item>
+          <a-switch checked-children="light" un-checked-children="dark" :checked="theme === 'light'" @change="changeTheme" />
         </a-menu>
       </a-layout-header>
       <!-- 路由容器 -->
@@ -109,11 +65,11 @@ export default defineComponent({
       activeMain: ['1'],
       activeSecondary: ['1001'],
       collapsed: false,
-      theme: 'light',
+      theme: 'dark',
       menuList: Menu,
       currTopMenu: []
     }
-    const state:ReactiveData = reactive(data)
+    const state: ReactiveData = reactive(data)
     // 改变主题
     const changeTheme = (checked: boolean): void => {
       state.theme = checked ? 'light' : 'dark'
@@ -122,28 +78,22 @@ export default defineComponent({
     const handleNavigate = (type: string, { key = 0 }) => {
       let target: MenuConfig
       if (type === 'sider') {
-        target = state.menuList.find((item) => item.menuId === key) || state.menuList[0]
-        state.currTopMenu =
-          target && target.children && target.children.length
-            ? target.children
-            : [target]
+        target = state.menuList.find(item => item.menuId === Number(key)) || state.menuList[0]
+        state.currTopMenu = target && target.children && target.children.length ? target.children : [target]
         state.activeSecondary = [state.currTopMenu[0].menuId + '']
         router.push({ name: state.currTopMenu[0].name })
       } else {
-        target = state.currTopMenu.find((item) => item.menuId === key) || state.menuList[0]
+        target = state.currTopMenu.find(item => item.menuId === key) || state.menuList[0]
         router.push(target.name)
       }
     }
     // 初始化菜单 排序
     const init = () => {
       state.menuList.sort((a, b) => a.urlOrder - b.urlOrder)
-      state.menuList.forEach((parent) => {
+      state.menuList.forEach(parent => {
         parent.children.sort((a, b) => a.urlOrder - b.urlOrder)
       })
-      state.currTopMenu =
-        state.menuList[0].children && state.menuList[0].children.length
-          ? state.menuList[0].children
-          : [state.menuList[0]]
+      state.currTopMenu = state.menuList[0].children && state.menuList[0].children.length ? state.menuList[0].children : [state.menuList[0]]
     }
     init()
     return {
@@ -158,7 +108,7 @@ export default defineComponent({
 .main-sider {
   border-right: 1px solid #f0f0f0;
   height: 100vh;
-  ::v-deep .ant-menu {
+  :deep(.ant-menu) {
     .ant-menu-item {
       display: flex;
       &:first-child {
@@ -166,27 +116,26 @@ export default defineComponent({
       }
     }
   }
-  ::v-deep .ant-layout-sider-children {
+  :deep(.ant-layout-sider-children) {
     position: fixed;
     width: 199px;
   }
-  ::v-deep .ant-menu.ant-menu-inline-collapsed {
+  :deep(.ant-menu.ant-menu-inline-collapsed) {
     width: 80px;
   }
-  ::v-deep .ant-menu-title-content {
+  :deep(.ant-menu-title-content) {
     display: flex;
   }
   .menu-text-show {
     opacity: 1;
-    transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1),
-      width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1), width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
   }
   .menu-text-hide {
     display: inline-block;
     max-width: 0;
     opacity: 0;
   }
-  ::v-deep .menu-icon {
+  :deep(.menu-icon) {
     margin-right: 8px;
   }
   .logo {
@@ -196,8 +145,7 @@ export default defineComponent({
     align-items: center;
     .logo-text-show {
       opacity: 1;
-      transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1),
-        width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+      transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1), width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
     }
     .logo-text-hide {
       display: inline-block;
@@ -224,12 +172,13 @@ export default defineComponent({
   display: flex;
   background: rgb(255, 255, 255);
   padding: 0px;
-  ::v-deep .ant-menu {
+  z-index: 999;
+  :deep(.ant-menu) {
     width: 100%;
     line-height: 64px;
     position: relative;
   }
-  ::v-deep .ant-switch {
+  :deep(.ant-switch) {
     position: fixed;
     right: 10px;
     top: 21px;
@@ -252,8 +201,8 @@ export default defineComponent({
 .main-content {
   padding: 16px;
   padding-top: 80px;
-  background: rgb(255, 255, 255);
-  min-height: calc(100vh - 64px);
+  background: #f0f2f5;
+  height: calc(100vh - 64px);
   overflow: auto;
 }
 </style>
