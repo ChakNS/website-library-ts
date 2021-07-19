@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-import Main from '_c/main/main.vue'
+import Layout from '@/layout'
 import Tools from './routes/tools'
 import Tips from './routes/tips'
 
@@ -7,7 +7,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     redirect: '/library-info',
-    component: Main,
+    component: Layout,
     children: [
       {
         path: 'library-info',

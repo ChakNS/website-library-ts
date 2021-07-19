@@ -1,12 +1,12 @@
 import { RouteRecordRaw } from 'vue-router'
-import Main from '_c/main/main.vue'
+import Layout from '@/layout'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/tools',
     name: 'tools',
     redirect: '/tools/list',
-    component: Main,
+    component: Layout,
     children: [
       {
         path: 'list',
