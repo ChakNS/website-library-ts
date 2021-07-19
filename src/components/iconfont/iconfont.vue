@@ -1,49 +1,51 @@
 <script lang="jsx">
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue'
 export default defineComponent({
   props: {
     name: {
       type: String,
-      required: true,
+      required: true
     },
     color: {
       type: String,
-      default: "#fff",
+      default: '#fff'
     },
     size: {
       type: [String, Number],
-      default: 12,
+      default: 12
     },
     tag: {
       type: String,
-      default: "div",
+      default: 'div'
     },
     class: {
       type: String,
-      default: "",
+      default: ''
     },
     style: {
       type: Object,
-      default: {},
-    },
+      default: () => {
+        return {}
+      }
+    }
   },
   setup(props) {
     return () => (
       <>
         <props.tag
           className={`iconfont ${
-            props.name.startsWith("icon") ? props.name : `icon${props.name}`
+            props.name.startsWith('icon') ? props.name : `icon${props.name}`
           } ${props.class}`}
           style={{
             color: props.color,
-            fontSize: props.size + "px",
-            ...props.style,
+            fontSize: props.size + 'px',
+            ...props.style
           }}
         ></props.tag>
       </>
-    );
-  },
-});
+    )
+  }
+})
 </script>
 
 <style lang="scss" scoped></style>

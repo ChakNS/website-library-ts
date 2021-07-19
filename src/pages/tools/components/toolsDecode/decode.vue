@@ -14,33 +14,11 @@
             />
           </a-form-item>
         </a-col>
-        <a-col
-          :span="4"
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-          "
-        >
+        <a-col :span="4" style="display: flex; align-items: center; justify-content: center; text-align: center">
           <div class="switch-buttons">
-            <a-button
-              type="primary"
-              style="margin-bottom: 20px"
-              @click="handleDecode"
-              >decode<a-icon
-type="right"
-            /></a-button>
-            <a-button
-type="primary"
-@click="handleEncode"
-              ><a-icon type="left" />encode</a-button
-            >
-            <a-select
-              :default-value="filterOption"
-              style="width: 120px; margin-top: 20px"
-              @change="handleChange"
-            >
+            <a-button type="primary" style="margin-bottom: 20px" @click="handleDecode">decode<a-icon type="right" /></a-button>
+            <a-button type="primary" @click="handleEncode"><a-icon type="left" />encode</a-button>
+            <a-select :default-value="filterOption" style="width: 120px; margin-top: 20px" @change="handleChange">
               <a-select-option value="content">content</a-select-option>
               <a-select-option value="action">action</a-select-option>
               <a-select-option value="token">token</a-select-option>
@@ -55,7 +33,7 @@ type="primary"
               style="width: 100%"
               placeholder="decode"
               allow-clear
-              @change="(e) => (decodeStr = e.target.value)"
+              @change="e => (decodeStr = e.target.value)"
             />
           </a-form-item>
         </a-col>
@@ -82,18 +60,15 @@ export default defineComponent({
           state.decodeStr = decodeData
           return
         }
-        let [action, ct] = decodeData.split('&content=')
+        let [action] = decodeData.split('&content=')
+        const [, ct] = decodeData.split('&content=')
         action = action.split('=')[1]
         const [content, token] = ct.split('&token=')
         const dataMap = { action, content, token }
         console.log(dataMap)
         // const target = decodeData.split('&').find(item => item.startsWith(state.filterOption))
         try {
-          state.decodeStr = JSON.stringify(
-            JSON.parse(dataMap[state.filterOption]),
-            null,
-            2
-          )
+          state.decodeStr = JSON.stringify(JSON.parse(dataMap[state.filterOption]), null, 2)
         } catch (error) {
           console.log(error)
         }
