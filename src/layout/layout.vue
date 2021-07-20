@@ -6,21 +6,21 @@
       :collapsed="collapsed"
       :curr-top-menu="currTopMenu"
       :menu-list="menuList"
-      @change-theme="changeTheme"
       @update-top-menu="updateTopMenu"
       @handle-collapsed="collapsed = !collapsed"
     />
     <a-layout>
+      <!-- 头部 -->
       <layout-header
         :theme="theme"
         :collapsed="collapsed"
         :curr-top-menu="currTopMenu"
-        :menu-list="menuList"
         :active="activeSecondary"
         @change-theme="changeTheme"
         @handle-collapsed="collapsed = !collapsed"
+        @handle-activeSecondary="val => activeSecondary = val"
       />
-      <!-- 路由容器 -->
+      <!-- 主体 -->
       <layout-content />
     </a-layout>
   </a-layout>
@@ -54,10 +54,6 @@ export default defineComponent({
       currTopMenu: []
     }
     const state = reactive(data)
-    // 改变主题
-    const changeTheme = (checked: boolean): void => {
-      state.theme = checked ? 'light' : 'dark'
-    }
     // 初始化菜单 排序
     const init = () => {
       state.menuList.sort((a, b) => a.urlOrder - b.urlOrder)
@@ -66,9 +62,12 @@ export default defineComponent({
       })
       state.currTopMenu = state.menuList[0].children && state.menuList[0].children.length ? state.menuList[0].children : [state.menuList[0]]
     }
+    // 改变主题
+    const changeTheme = (checked: boolean): void => {
+      state.theme = checked ? 'light' : 'dark'
+    }
     const updateTopMenu = (key: number) => {
-      let target: MenuConfig
-      target = state.menuList.find(item => item.menuId === Number(key)) || state.menuList[0]
+      const target: MenuConfig = state.menuList.find(item => item.menuId === Number(key)) || state.menuList[0]
       state.currTopMenu = target && target.children && target.children.length ? target.children : [target]
       state.activeSecondary = [state.currTopMenu[0].menuId + '']
     }
@@ -81,5 +80,3 @@ export default defineComponent({
   }
 })
 </script>
-<style lang="scss" scoped>
-</style>

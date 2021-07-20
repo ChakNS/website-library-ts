@@ -1,12 +1,12 @@
 <template>
-  <a-layout-header class="main-header" :style="{ width: `calc(100% - ${collapsed ? '80px' : '200px'})` }">
+  <a-layout-header class="main-header" :style="{ width: `calc(100% - 80px)` }">
     <!-- 展开图标 -->
     <div :class="['trigger', `${theme}-bcg`]" :style="{ borderColor: theme === 'dark' ? '#001529' : '#f0f0f0' }" @click="$emit('handle-collapsed')">
       <iconfont v-if="collapsed" name="zhankai" size="24" :color="theme === 'dark' ? '#fff' : '#001529'" />
       <iconfont v-else name="shouqi" size="24" :color="theme === 'dark' ? '#fff' : '#001529'" />
     </div>
     <!-- 二级目录 -->
-    <a-menu v-model:selectedKeys="activeSecondary" :theme="theme" mode="horizontal" @select="handleNavigate('top', $event)">
+    <a-menu v-model:selectedKeys="activeSecondary" :theme="theme" mode="horizontal" @select="handleNavigate">
       <a-menu-item v-for="item in currTopMenu" :key="item.menuId + ''">{{ item.title }}</a-menu-item>
       <a-switch checked-children="light" un-checked-children="dark" :checked="theme === 'light'" @change="changeTheme" />
     </a-menu>
@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive, toRefs } from 'vue'
+import { defineComponent, PropType, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import Iconfont from '_c/iconfont/iconfont.vue'
 import { MenuConfig } from '../config'
@@ -35,35 +35,34 @@ export default defineComponent({
     },
     active: {
       type: Array as PropType<string[]>,
-      default: ['1001']
+      default: () => (['1001'])
     },
     currTopMenu: {
       type: Array as PropType<MenuConfig[]>
-    },
-    menuList: {
-      type: Array as PropType<MenuConfig[]>
     }
   },
-  setup(props, ctx) {
+  setup(props, { emit }) {
     const router = useRouter()
-    const data = {
-      activeSecondary: props.active
-    }
-    const state = reactive(data)
     // 改变主题
     const changeTheme = (checked: boolean): void => {
-      console.log(ctx.emit)
-      ctx.emit('change-theme', checked)
+      emit('change-theme', checked)
     }
+    const activeSecondary = computed({
+      get: () => props.active,
+      set: (val: string[]) => {
+        emit('handle-activeSecondary', val)
+      }
+    })
     // 点击菜单跳转
-    const handleNavigate = (type: string, { key = 0 }) => {
-      let target: MenuConfig
-      target = props.currTopMenu.find(item => item.menuId === key) || props.menuList[0]
-      router.push(target.name)
+    const handleNavigate = ({ key = 0 }) => {
+      setTimeout(() => {
+        const target: MenuConfig = props.currTopMenu.find(item => item.menuId === Number(key)) || props.currTopMenu[0]
+        router.push(target.name)
+      }, 0)
     }
     return {
-      ...toRefs(state),
       changeTheme,
+      activeSecondary,
       handleNavigate
     }
   }
@@ -71,6 +70,7 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 .main-header {
+  width: 100%;
   position: fixed;
   display: flex;
   background: rgb(255, 255, 255);

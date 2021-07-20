@@ -1,12 +1,3 @@
-export interface ReactiveData {
-  activeMain: string[],
-  activeSecondary: string[],
-  collapsed: boolean,
-  theme: string,
-  menuList: Array<MenuConfig>,
-  currTopMenu: Array<MenuConfig>
-}
-
 export interface MenuConfig {
   name: string,
   path: string,

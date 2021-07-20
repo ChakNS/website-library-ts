@@ -1,40 +1,39 @@
 <template>
   <a-layout-sider
-      v-model:collapsed="collapsed"
-      class="main-sider"
-      :class="[`${theme}-bcg-imp`]"
-      :style="{ borderRight: theme === 'dark' ? 'none' : '1px solid #f0f0f0' }"
-      :trigger="null"
-      collapsible
-    >
-      <!-- logo图标 -->
-      <div class="logo">
-        <div class="logo-container">
-          <img src="@/assets/images/logo.png" alt="logo" />
-        </div>
-        <span :class="[`logo-text-${collapsed ? 'hide' : 'show'}`, `${theme}-color`]">Website Library</span>
+    v-model:collapsed="isCollapsed"
+    class="main-sider"
+    :class="[`${theme}-bcg-imp`]"
+    :style="{ borderRight: theme === 'dark' ? 'none' : '1px solid #f0f0f0' }"
+    :trigger="null"
+    collapsible
+  >
+    <!-- logo图标 -->
+    <div class="logo">
+      <div class="logo-container">
+        <img src="@/assets/images/logo.png" alt="logo" />
       </div>
-      <a-menu
-        v-model:selectedKeys="activeMain"
-        :style="[!collapsed && theme === 'light' ? { borderRight: 'none' } : '']"
-        :theme="theme"
-        mode="inline"
-        @select="handleNavigate('sider', $event)"
-      >
-        <a-menu-item v-for="item in menuList" :key="item.menuId + ''">
-          <iconfont :name="item.icon" class="menu-icon" size="20" :color="theme === 'dark' ? '#fff' : '#001529'" />
-          <span :class="[`menu-text-${collapsed ? 'hide' : 'show'}`]">{{ item.title }}</span>
-        </a-menu-item>
-      </a-menu>
-    </a-layout-sider>
+      <span :class="[`logo-text-${collapsed ? 'hide' : 'show'}`, `${theme}-color`]">Website Library</span>
+    </div>
+    <a-menu
+      v-model:selectedKeys="activeMain"
+      :style="[!collapsed && theme === 'light' ? { borderRight: 'none' } : '']"
+      :theme="theme"
+      mode="inline"
+      @select="handleNavigate"
+    >
+      <a-menu-item v-for="item in menuList" :key="item.menuId + ''">
+        <iconfont :name="item.icon" class="menu-icon" size="20" :color="theme === 'dark' ? '#fff' : '#001529'" />
+        <span :class="[`menu-text-${collapsed ? 'hide' : 'show'}`]">{{ item.title }}</span>
+      </a-menu-item>
+    </a-menu>
+  </a-layout-sider>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, PropType } from 'vue'
+import { defineComponent, reactive, toRefs, PropType, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import Iconfont from '_c/iconfont/iconfont.vue'
-import Menu from '@/config/menu'
-import { MenuConfig, ReactiveData } from '../config'
+import { MenuConfig } from '../config'
 
 export default defineComponent({
   name: 'LayoutSider',
@@ -57,22 +56,28 @@ export default defineComponent({
   components: {
     Iconfont
   },
-  setup(props, ctx) {
+  setup(props, { emit }) {
     const router = useRouter()
     const data = {
       activeMain: ['1']
     }
+    const isCollapsed = computed({
+      get: () => props.collapsed,
+      set: () => {
+        emit('handle-collapsed')
+      }
+    })
     const state = reactive(data)
     // 点击菜单跳转
-    const handleNavigate = (type: string, { key = 0 }) => {
-      let target: MenuConfig
-      if (type === 'sider') {
-        ctx.emit('update-top-menu', key)
+    const handleNavigate = ({key = 0}) => {
+      emit('update-top-menu', key)
+      setTimeout(() => {
         router.push({ name: props.currTopMenu[0].name })
-      }
+      }, 0)
     }
     return {
       ...toRefs(state),
+      isCollapsed,
       handleNavigate
     }
   }
@@ -89,13 +94,6 @@ export default defineComponent({
         margin-top: 0;
       }
     }
-  }
-  :deep(.ant-layout-sider-children) {
-    position: fixed;
-    width: 199px;
-  }
-  :deep(.ant-menu.ant-menu-inline-collapsed) {
-    width: 80px;
   }
   :deep(.ant-menu-title-content) {
     display: flex;
