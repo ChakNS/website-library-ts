@@ -17,7 +17,7 @@
 import { defineComponent, PropType, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import Iconfont from '_c/iconfont/iconfont.vue'
-import { MenuConfig } from '../config'
+import { MenuConfig } from '@/model/layout'
 
 export default defineComponent({
   name: 'LayoutHeader',

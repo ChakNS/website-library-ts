@@ -6,14 +6,14 @@
 
 <script>
 export default {
-  name: "tools-item",
+  name: 'ToolsItem',
   props: {
     detail: {
       type: Object,
-      default: () => {},
-    },
-  },
-};
+      default: () => ({})
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">
