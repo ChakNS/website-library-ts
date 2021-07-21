@@ -1,9 +1,12 @@
-export default function (http: any): any {
-  return (path = '', params = {}, options: any) => {
+import { HttpInterface, OptionsMap } from '@/model/api'
+import { AxiosPromise } from 'axios'
+
+export default function (http: HttpInterface): (path: string, params: unknown, options: OptionsMap) => AxiosPromise {
+  return (path = '', params = {}, options: OptionsMap): AxiosPromise => {
     const accessToken = ''
     const defaultHeaderData = {
       accessToken: '',
-      pagingInfo: ''
+      pagingInfo: {}
     }
     // 默认请求参数：token
     if (accessToken) {
@@ -22,9 +25,9 @@ export default function (http: any): any {
       url: http.baseUrl + path,
       data: body,
       method: 'post',
-      headers: http.headers,
+      headers: http.header,
       responseType: 'json'
     }
-    return http.request(option).then((res: any) => res)
+    return http.request(http, option).then((res: any) => res)
   }
 }

@@ -1,4 +1,7 @@
-export default function (http: any, instance: any, headers: any): void {
+import { HttpInterface } from '@/model/api'
+import { AxiosInstance } from 'axios'
+
+export default function (http: HttpInterface, instance: AxiosInstance, headers: unknown): void {
   // 请求拦截
   instance.interceptors.request.use(
     (request: any) => {
@@ -12,8 +15,7 @@ export default function (http: any, instance: any, headers: any): void {
   // 响应拦截
   instance.interceptors.response.use(
     (response: any) => {
-      const { status = 'FAIL' } = response
-      return { status }
+      return response
     },
     async (error: any) => {
       // Error: Network Error
