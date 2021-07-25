@@ -48,15 +48,15 @@ export default defineComponent({
       emit('change-theme', checked)
     }
     const activeSecondary = computed({
-      get: () => props.active,
-      set: (val: string[]) => {
+      get: (): any => props.active,
+      set: (val: string[]): void => {
         emit('handle-activeSecondary', val)
       }
     })
     // 点击菜单跳转
     const handleNavigate = ({ key = 0 }) => {
       setTimeout(() => {
-        const target: MenuConfig = props.currTopMenu.find(item => item.menuId === Number(key)) || props.currTopMenu[0]
+        const target: MenuConfig = (props.currTopMenu as MenuConfig[]).find(item => item.menuId === Number(key)) || (props.currTopMenu as MenuConfig[])[0]
         router.push(target.name)
       }, 0)
     }
