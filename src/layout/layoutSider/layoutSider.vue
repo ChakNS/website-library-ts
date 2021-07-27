@@ -72,7 +72,7 @@ export default defineComponent({
     const handleNavigate = ({key = 0}) => {
       emit('update-top-menu', key)
       setTimeout(() => {
-        router.push({ name: props.currTopMenu[0].name })
+        router.push({ name: (props.currTopMenu as MenuConfig[])[0].name })
       }, 0)
     }
     return {
