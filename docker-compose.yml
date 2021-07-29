@@ -1,9 +1,0 @@
-version: '2'
-services: 
-  website-library:
-    image: chakcheung4565/website-library
-    build: 
-      context: .
-      dockerfile: Dockerfile
-    ports: 
-      - "1888:80"

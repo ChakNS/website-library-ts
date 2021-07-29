@@ -28,6 +28,6 @@ export default function (http: HttpInterface): (path: string, params: unknown, o
       headers: http.header,
       responseType: 'json'
     }
-    return http.request(http, option).then((res: any) => res)
+    return http.request(http, option).then((res: any) => res.data)
   }
 }

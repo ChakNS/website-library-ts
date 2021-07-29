@@ -26,12 +26,12 @@
   </a-layout>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue'
-import Menu from '@/config/menu'
+import { defineComponent, reactive, toRefs, onMounted } from 'vue'
 import { MenuConfig } from '@/model/layout'
 import LayoutHeader from './layoutHeader'
 import LayoutSider from './layoutSider'
 import LayoutContent from './layoutContent'
+import SystemApi from '_a/system'
 
 export default defineComponent({
   components: {
@@ -50,10 +50,15 @@ export default defineComponent({
       activeSecondary: ['1001'],
       collapsed: false,
       theme: 'dark',
-      menuList: Menu,
+      menuList: [],
       currTopMenu: []
     }
     const state = reactive(data)
+    const getMenus = () => {
+      return SystemApi.MenuList().then((res: any) => {
+        return res.data
+      })
+    }
     // 初始化菜单 排序
     const init = () => {
       state.menuList.sort((a, b) => a.urlOrder - b.urlOrder)
@@ -71,7 +76,10 @@ export default defineComponent({
       state.currTopMenu = target && target.children && target.children.length ? target.children : [target]
       state.activeSecondary = [state.currTopMenu[0].menuId + '']
     }
-    init()
+    onMounted(async () => {
+      state.menuList = await getMenus()
+      init()
+    })
     return {
       ...toRefs(state),
       changeTheme,

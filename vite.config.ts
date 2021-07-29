@@ -22,7 +22,7 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
       _c: resolve(__dirname, 'src/components'),
       _u: resolve(__dirname, 'src/utils'),
-      _a: resolve(__dirname, 'src/api')
+      _a: resolve(__dirname, 'src/api/src')
     }
   },
   server: {

@@ -19,7 +19,8 @@
     ],
     "paths": {
       "@/*": [ "src/*" ],
-      "_c/*": [ "src/components/*" ]
+      "_c/*": [ "src/components/*" ],
+      "_a/*": [ "src/api/src/*" ]
     },
     "lib": [
       "esnext",

@@ -23,7 +23,7 @@ module.exports = {
     }
   },
   chainWebpack: config => {
-    config.resolve.alias.set('@', resolve('src')).set('_c', resolve('src/components')).set('_u', resolve('src/utils')).set('_a', resolve('src/api'))
+    config.resolve.alias.set('@', resolve('src')).set('_c', resolve('src/components')).set('_u', resolve('src/utils')).set('_a', resolve('src/api/src'))
   },
   // 打包时不生成.map文件
   productionSourceMap: false
