@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import Layout from '@/layout'
 import Tools from './routes/tools'
 import Tips from './routes/tips'
+import Menus from './routes/menus'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -19,6 +20,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   ...Tips,
   ...Tools,
+  ...Menus,
   {
     path: '/:pathMatch(.*)*',
     redirect: '/404'

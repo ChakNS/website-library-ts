@@ -2,7 +2,7 @@
   <div class="common-container home-container">
     <div class="content">
       <img class="img" src="@/assets/images/logo.png" alt="" />
-      <div class="text">Welcome to my Website Library7777733377</div>
+      <div class="text">Welcome to Website Library</div>
     </div>
   </div>
 </template>
@@ -27,6 +27,7 @@ export default defineComponent({
       width: 50%;
     }
     .text {
+      margin-top: 30px;
       font-size: 28px;
       font-weight: 500;
     }

@@ -33,3 +33,9 @@
 .light-color-imp {
   color: $dark-color !important;
 }
+
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

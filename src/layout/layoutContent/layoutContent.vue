@@ -11,6 +11,7 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 .main-content {
+  min-width: 700px;
   padding: 16px;
   padding-top: 80px;
   background: #f0f2f5;
