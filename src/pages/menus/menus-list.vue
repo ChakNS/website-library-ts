@@ -17,7 +17,7 @@ interface DataItem {
   address: string;
 }
 const data: DataItem[] = []
-for (let i = 0; i < 30; i++) {
+for (let i = 0; i < 1; i++) {
   data.push({
     key: i,
     name: `Edrward ${i}`,
