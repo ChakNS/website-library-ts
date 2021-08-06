@@ -1,30 +1,17 @@
 <template>
   <div class="common-container menus-container">
     <div class="content">
-      <custom-table :config="config" :data-source="data" />
+      <custom-table :config="config" :data-source="menuList" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import CustomTable from '_c/table'
+import { defineComponent, onMounted, ref } from 'vue'
+import CustomTable from '_c/customTable'
 import Config from './config'
-interface DataItem {
-  key: number;
-  name: string;
-  age: number;
-  address: string;
-}
-const data: DataItem[] = []
-for (let i = 0; i < 1; i++) {
-  data.push({
-    key: i,
-    name: `Edrward ${i}`,
-    age: 32,
-    address: `London Park no. ${i}`
-  })
-}
+import SystemApi from '_a/system'
+
 export default defineComponent({
   name: 'MenusList',
   components: {
@@ -32,8 +19,19 @@ export default defineComponent({
   },
   data () {
     return {
-      config: Config,
-      data
+      config: Config
+    }
+  },
+  setup() {
+    const menuList = ref()
+    const fetchMenuList = () => {
+      return SystemApi.MenuList().then((res: any) => res.data)
+    }
+    onMounted(async () => {
+      menuList.value = await fetchMenuList()
+    })
+    return {
+      menuList
     }
   }
 })
