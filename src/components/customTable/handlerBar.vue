@@ -24,7 +24,7 @@ export default defineComponent({
       default: (): any[] => []
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     return () => (
       <div class="table-handler-bar">
         <div>
@@ -32,7 +32,7 @@ export default defineComponent({
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             const IconComp = Icon[item.icon]
-            return <Button v-slots={{ icon: () => <IconComp />, default: () => <span>{item.title}</span> }} style={{ marginRight: '10px' }} />
+            return <Button v-slots={{ icon: () => <IconComp />, default: () => <span>{item.title}</span> }} onClick={ () => emit('emits', item)} style={{ marginRight: '10px' }} />
           })}
         </div>
         <div class="search-box">

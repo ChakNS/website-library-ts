@@ -1,6 +1,6 @@
 <template>
   <div class="custom-table-container">
-    <handler-bar v-if="config.handler?.length" :handler-config="config.handler" :search-config="config.search" />
+    <handler-bar v-if="config.handler?.length" :handler-config="config.handler" :search-config="config.search" @emits="handleEmits" />
     <a-table :columns="columns" :data-source="dataSource" :pagination="false" :rowKey="config.rowKey" :scroll="{ x: true, y: tableH }" @change="handleChange" />
     <a-pagination show-quick-jumper v-if="false" v-model:current="currPageNo" :total="500" />
   </div>
@@ -27,7 +27,7 @@ export default defineComponent({
       default: (): unknown[] => []
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     // ---------------------------------------------------------------------初始化表格分页
     const currPageNo = ref(1)
     // ---------------------------------------------------------------------初始化表格布局
@@ -95,13 +95,18 @@ export default defineComponent({
       console.log(222, columns)
       return columns
     }
+    // ---------------------------------------------------------------------初始化操作事件
+    const handleEmits = (item: { emit: string }) => {
+      emit(item.emit || 'handleClick')
+    }
     // ---------------------------------------------------------------------结束
 
     return {
       currPageNo,
       tableH,
       columns,
-      handleChange
+      handleChange,
+      handleEmits
     }
   }
 })

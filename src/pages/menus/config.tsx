@@ -5,12 +5,12 @@ export default {
     {
       title: '新增',
       icon: 'DiffOutlined',
-      emit: ''
+      emit: 'handle-add'
     },
     {
       title: '删除',
       icon: 'DeleteOutlined',
-      emit: ''
+      emit: 'handleDelete'
     }
   ],
   search: [
