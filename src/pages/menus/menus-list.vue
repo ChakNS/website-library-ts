@@ -1,7 +1,7 @@
 <template>
   <div class="common-container menus-container">
     <div class="content">
-      <custom-table :config="config" :data-source="menuList" @handle-add="handleAdd" />
+      <custom-table :config="config" :data-source="menuList" />
     </div>
   </div>
   <a-modal v-model:visible="modalStatus['add']" title="新增菜单">
@@ -32,53 +32,44 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, reactive, UnwrapRef } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import CustomTable from '_c/customTable'
-import Config from './config'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import config from './config.tsx'
 import SystemApi from '_a/system'
-interface FormState {
-  pId: number | null
-  title: string
-  path: string
-  name: string
-  icon: string
-  isDisplay: string | boolean
-  urlOrder: number
-}
 
 export default defineComponent({
   name: 'MenusList',
   components: {
     CustomTable
   },
+  data () {
+    return {
+      config: config(this),
+      modalStatus: {
+        add: false
+      },
+      formState: {
+        pId: null,
+        title: '',
+        path: '',
+        name: '',
+        icon: '',
+        isDisplay: true,
+        urlOrder: 0
+      }
+    }
+  },
   setup() {
-    const formState: UnwrapRef<FormState> = reactive({
-      pId: null,
-      title: '',
-      path: '',
-      name: '',
-      icon: '',
-      isDisplay: true,
-      urlOrder: 0
-    })
-    const config = reactive(Config)
-    const modalStatus = reactive({
-      add: false
-    })
+    // ****菜单相关****
     const menuList = ref()
     const fetchMenuList = () => SystemApi.MenuList().then((res: any) => {
       return res.data
     })
     onMounted(async () => (menuList.value = await fetchMenuList()))
-    const handleAdd = () => {
-      modalStatus['add'] = true
-    }
     return {
-      config,
-      modalStatus,
-      menuList,
-      handleAdd,
-      formState
+      menuList
     }
   }
 })

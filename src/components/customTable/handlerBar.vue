@@ -7,7 +7,7 @@ import * as Icon from '@ant-design/icons-vue'
 interface handlerItem {
   title: string,
   icon: string,
-  emit: string
+  on: any
 }
 export default defineComponent({
   components: {
@@ -22,9 +22,13 @@ export default defineComponent({
     searchConfig: {
       type: Array,
       default: (): any[] => []
+    },
+    selectedKeys: {
+      type: Array,
+      default: (): any[] => []
     }
   },
-  setup(props, { emit }) {
+  setup(props) {
     return () => (
       <div class="table-handler-bar">
         <div>
@@ -32,7 +36,7 @@ export default defineComponent({
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             const IconComp = Icon[item.icon]
-            return <Button v-slots={{ icon: () => <IconComp />, default: () => <span>{item.title}</span> }} onClick={ () => emit('emits', item)} style={{ marginRight: '10px' }} />
+            return <Button v-slots={{ icon: () => <IconComp />, default: () => <span>{item.title}</span> }} onClick={ () => item.on && item.on(props.selectedKeys) } style={{ marginRight: '10px' }} />
           })}
         </div>
         <div class="search-box">

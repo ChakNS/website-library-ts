@@ -1,16 +1,32 @@
 import Iconfont from '_c/iconfont/iconfont.vue'
-export default {
+import type { App } from 'vue'
+const config = (vm: any): any => ({
   rowKey: 'menuId',
+  selection: true,
   handler: [
     {
       title: '新增',
       icon: 'DiffOutlined',
-      emit: 'handle-add'
+      on: () => {
+        vm.modalStatus['add'] = true
+        vm.formState = {
+          pId: null,
+          title: '',
+          path: '',
+          name: '',
+          icon: '',
+          isDisplay: true,
+          urlOrder: 0
+        }
+      }
     },
     {
       title: '删除',
       icon: 'DeleteOutlined',
-      emit: 'handleDelete'
+      on: (selectedKeys: (number | string)[]) => {
+        console.log(111, selectedKeys)
+        console.log(234)
+      }
     }
   ],
   search: [
@@ -22,40 +38,32 @@ export default {
       width: '300px'
     }
   ],
-  columns: (filtered: any) => {
+  columns: () => {
     return [
       {
         title: '菜单名称',
         dataIndex: 'title',
         key: 'title',
-        width: '200px',
-        // filters: [
-        //   { text: 'Joe', value: 'Joe' },
-        //   { text: 'Jim', value: 'Jim' },
-        // ],
-        // filteredValue: filtered.name || null,
-        // onFilter: (value: string, record: any) => record.name.includes(value),
-        // customRender: (row: any) => {
-        //   return (<div>{row.text}</div>)
-        // }
+        align: 'left',
+        width: '200px'
       },
       {
         title: '菜单路径',
         dataIndex: 'path',
-        key: 'path',
+        key: 'path'
       },
       {
         title: '菜单图标',
         dataIndex: 'icon',
         key: 'icon',
-        customRender: ( { text: icon } : { text: string } ) => <Iconfont name={icon} size="24" color="#001529" />
+        customRender: ({ text: icon }: { text: string }) => <Iconfont name={icon} size="24" color="#001529" />
       },
       {
         title: '是否展示',
         dataIndex: 'isDisplay',
         key: 'isDisplay',
         width: 'auto',
-        customRender: ({ text } : { text: string }) => <span>{ text === 'Y' ? '是' : '否' }</span>
+        customRender: ({ text }: { text: string }) => <span>{text === 'Y' ? '是' : '否'}</span>
       },
       {
         title: '菜单排序',
@@ -70,15 +78,19 @@ export default {
           list: [
             {
               icon: 'EditOutlined',
-              text: '编辑'
-            },
-            {
-              icon: 'ExceptionOutlined',
-              text: '详情'
+              text: '编辑',
+              on: (row: any) => {
+                vm.modalStatus['add'] = true
+                vm.formState = row.record
+                vm.formState.pId = [row.record.pId]
+                console.log(vm.formState)
+              }
             }
           ]
         }
       }
     ]
   }
-}
+})
+
+export default config

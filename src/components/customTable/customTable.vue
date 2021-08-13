@@ -1,16 +1,26 @@
 <template>
   <div class="custom-table-container">
-    <handler-bar v-if="config.handler?.length" :handler-config="config.handler" :search-config="config.search" @emits="handleEmits" />
-    <a-table :columns="columns" :data-source="dataSource" :pagination="false" :rowKey="config.rowKey" :scroll="{ x: true, y: tableH }" @change="handleChange" />
+    <handler-bar v-if="config.handler?.length" :selected-keys="selectedRowKeys" :handler-config="config.handler" :search-config="config.search" />
+    <a-table :columns="columns" :row-selection="rowSelection" :data-source="dataSource" :pagination="false" :rowKey="config.rowKey" :scroll="{ x: true, y: tableH }" @change="handleChange" />
     <a-pagination show-quick-jumper v-if="false" v-model:current="currPageNo" :total="500" />
   </div>
 </template>
 <script lang="tsx">
-import { defineComponent, ref, computed, onMounted } from 'vue'
+import { defineComponent, ref, toRefs, reactive, computed, onMounted, PropType } from 'vue'
 import handlerBar from './handlerBar.vue'
-import { TableState, TableStateFilters } from 'ant-design-vue/es/table/interface'
+import type { TableState, TableStateFilters } from 'ant-design-vue/es/table/interface'
 import { renderOperation } from './operation'
 
+interface DataType {
+  menuId: number,
+  pId: number | null
+  title: string
+  path: string
+  name: string
+  icon: string
+  isDisplay: string | boolean
+  urlOrder: number
+}
 type Pagination = TableState['pagination']
 
 export default defineComponent({
@@ -23,14 +33,16 @@ export default defineComponent({
       default: () => ({})
     },
     dataSource: {
-      type: Array,
-      default: (): unknown[] => []
+      type: Array as PropType<DataType[]>,
+      default: (): DataType[] => []
     }
   },
-  setup(props, { emit }) {
-    // ---------------------------------------------------------------------初始化表格分页
-    const currPageNo = ref(1)
-    // ---------------------------------------------------------------------初始化表格布局
+  setup(props) {
+    // ****初始化表格分页****
+    const pageState = reactive({
+      currPageNo: 1
+    })
+    // ****初始化表格布局****
     const tableH = ref(window.innerHeight - 215)
     const otherSpace = computed(() => {
       let result = 203
@@ -44,7 +56,7 @@ export default defineComponent({
       handleTableHCalc()
       window.addEventListener('resize', handleTableHCalc)
     })
-    // ---------------------------------------------------------------------列表过滤设置
+    // ****列表过滤设置****
     const filteredInfo = ref()
     const columns = computed(() => {
       if (props.config.columns instanceof Array) return formatCloumns(props.config.columns)
@@ -55,20 +67,19 @@ export default defineComponent({
       console.log('Various parameters', pagination, filters, sorter)
       filteredInfo.value = filters
     }
-    // ---------------------------------------------------------------------单元格设置
-    // 设置单元格
+    // ****单元格设置****
     const formatCloumns = (columns: any) => {
       const handle = [setDefault, setWidth, setOperation]
       return handle.reduce((pre, curr): any => curr(pre), columns)
     }
-    // 设置单元格默认值
+    // 默认值
     const setDefault = (columns: any):any => {
       columns.forEach((item: { align: string }) => {
         if (!item.align) item.align = 'center'
       })
       return columns
     }
-    // 设置单元格宽度
+    // 宽度
     const setWidth = (columns: any):any => {
       const unsetCount = columns.filter((item: { width: string }) => !item.width || item.width === 'auto').length
       const currentPersent = columns.reduce((pre: number, curr: { width: string }) => {
@@ -84,29 +95,39 @@ export default defineComponent({
       console.log(1111, columns)
       return columns
     }
-    // 设置单元格操作栏
+    // 操作栏
     const setOperation = (columns: any):any => {
       const operation = columns.find((item: { key: string }) => item.key === 'operation')
       if (operation && operation.config) {
         operation.customRender = (row: any) => {
-          return renderOperation(operation)
+          return renderOperation(operation, row)
         }
       }
       console.log(222, columns)
       return columns
     }
-    // ---------------------------------------------------------------------初始化操作事件
-    const handleEmits = (item: { emit: string }) => {
-      emit(item.emit || 'handleClick')
-    }
-    // ---------------------------------------------------------------------结束
+    // ****表格选择设置****
+    const selectState = reactive({
+      selectedRowKeys: []
+    })
+    const rowSelection = computed(() => {
+      if (!props.config.selection) return null
+      return {
+        selectedRowKeys: selectState.selectedRowKeys,
+        onChange: (selected: DataType[]) => {
+          console.log('selectedRowKeys changed: ', selected)
+          selectState.selectedRowKeys = selected
+        }
+      }
+    })
 
     return {
-      currPageNo,
+      ...toRefs(selectState),
+      ...toRefs(pageState),
       tableH,
       columns,
       handleChange,
-      handleEmits
+      rowSelection
     }
   }
 })
