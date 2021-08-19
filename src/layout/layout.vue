@@ -63,7 +63,7 @@ export default defineComponent({
     const init = () => {
       state.menuList.sort((a, b) => a.urlOrder - b.urlOrder)
       state.menuList.forEach(parent => {
-        parent.children.sort((a: any, b: any) => a.urlOrder - b.urlOrder)
+        parent.children && parent.children.sort((a: any, b: any) => a.urlOrder - b.urlOrder)
       })
       state.currTopMenu = state.menuList[0].children && state.menuList[0].children.length ? state.menuList[0].children : [state.menuList[0]]
     }

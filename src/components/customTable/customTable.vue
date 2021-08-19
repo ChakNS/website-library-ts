@@ -1,7 +1,7 @@
 <template>
   <div class="custom-table-container">
     <handler-bar v-if="config.handler?.length" :selected-keys="selectedRowKeys" :handler-config="config.handler" :search-config="config.search" />
-    <a-table :columns="columns" :row-selection="rowSelection" :data-source="dataSource" :pagination="false" :rowKey="config.rowKey" :scroll="{ x: true, y: tableH }" @change="handleChange" />
+    <a-table :columns="columns" :indentSize="10" :row-selection="rowSelection" :data-source="dataSource" :pagination="false" :rowKey="config.rowKey" :scroll="{ x: true, y: tableH }" @change="handleChange" />
     <a-pagination show-quick-jumper v-if="false" v-model:current="currPageNo" :total="500" />
   </div>
 </template>
@@ -103,7 +103,6 @@ export default defineComponent({
           return renderOperation(operation, row)
         }
       }
-      console.log(222, columns)
       return columns
     }
     // ****表格选择设置****
@@ -114,9 +113,8 @@ export default defineComponent({
       if (!props.config.selection) return null
       return {
         selectedRowKeys: selectState.selectedRowKeys,
-        onChange: (selected: DataType[]) => {
-          console.log('selectedRowKeys changed: ', selected)
-          selectState.selectedRowKeys = selected
+        onChange: function (selected: DataType[], selectedRows: DataType[]) {
+          selectState.selectedRowKeys = selectedRows.map(item => item.menuId)
         }
       }
     })

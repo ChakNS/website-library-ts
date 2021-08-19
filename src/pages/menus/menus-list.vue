@@ -4,7 +4,7 @@
       <custom-table :config="config" :data-source="menuList" />
     </div>
   </div>
-  <a-modal v-model:visible="modalStatus['add']" title="新增菜单">
+  <a-modal v-model:visible="modalStatus['edit']" title="新增菜单" @ok="handleAdd">
     <a-form :model="formState" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }">
       <a-form-item label="所属菜单">
         <a-cascader v-model:value="formState.pId" :fieldNames="{ label: 'title', value: 'menuId', children: 'children' }" change-on-select :options="menuList" placeholder="Please select" />
@@ -38,6 +38,7 @@ import CustomTable from '_c/customTable'
 // @ts-ignore
 import config from './config.tsx'
 import SystemApi from '_a/system'
+import { message } from 'ant-design-vue'
 
 export default defineComponent({
   name: 'MenusList',
@@ -46,30 +47,53 @@ export default defineComponent({
   },
   data () {
     return {
-      config: config(this),
-      modalStatus: {
-        add: false
-      },
-      formState: {
-        pId: null,
-        title: '',
-        path: '',
-        name: '',
-        icon: '',
-        isDisplay: true,
-        urlOrder: 0
-      }
+      config: config(this)
     }
   },
   setup() {
-    // ****菜单相关****
+    // ****加载菜单****
     const menuList = ref()
     const fetchMenuList = () => SystemApi.MenuList().then((res: any) => {
-      return res.data
+      res.data.forEach((item: any) => (item.isDisplay = item.isDisplay === 'Y'))
+      menuList.value = res.data
     })
-    onMounted(async () => (menuList.value = await fetchMenuList()))
+    onMounted(() => fetchMenuList())
+    // ****添加菜单****
+    const modalStatus = ref({
+      edit: false
+    })
+    const formState = ref({
+      pId: null,
+      title: '',
+      path: '',
+      name: '',
+      icon: '',
+      isDisplay: true,
+      urlOrder: 0,
+      menuId: 0
+    })
+    const handleAdd = () => {
+      const params = {
+        ...formState.value,
+        isDisplay: formState.value.isDisplay ? 'Y' : 'N'
+      }
+      const fetchPromise = params.menuId ? SystemApi['MenuUpdate'](params.menuId, params) : SystemApi['MenuAdd'](params)
+      fetchPromise.then(async (res: any) => {
+        if (res.status === 'SUCCESS') {
+          await fetchMenuList()
+          message.success(res.data)
+        } else {
+          message.error(res.error)
+        }
+        modalStatus.value.edit = false
+      })
+    }
     return {
-      menuList
+      fetchMenuList,
+      menuList,
+      modalStatus,
+      formState,
+      handleAdd
     }
   }
 })

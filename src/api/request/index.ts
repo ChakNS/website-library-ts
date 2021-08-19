@@ -6,7 +6,7 @@ try {
   console.log(process.env.VUE_APP_NODE_ENV)
 } catch (error) {
   baseUrl = (import.meta as any).env.VITE_BASE_URL
-  console.log((import.meta as any).env.VITE_NODE_ENV)
+  console.log((import.meta as any).env.VITE_BASE_URL)
 }
 console.log(baseUrl)
 const commonHeader = {

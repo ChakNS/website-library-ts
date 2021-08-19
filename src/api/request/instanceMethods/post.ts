@@ -19,7 +19,7 @@ export default function (http: HttpInterface): (path: string, params: unknown, o
     // 请求body
     const body = {
       header: Object.assign({}, defaultHeaderData),
-      params: params
+      payload: params
     }
     const option = {
       url: http.baseUrl + path,

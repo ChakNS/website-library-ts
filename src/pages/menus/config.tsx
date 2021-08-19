@@ -1,5 +1,6 @@
 import Iconfont from '_c/iconfont/iconfont.vue'
-import type { App } from 'vue'
+import SystemApi from '_a/system'
+import { message } from 'ant-design-vue'
 const config = (vm: any): any => ({
   rowKey: 'menuId',
   selection: true,
@@ -8,7 +9,7 @@ const config = (vm: any): any => ({
       title: '新增',
       icon: 'DiffOutlined',
       on: () => {
-        vm.modalStatus['add'] = true
+        vm.modalStatus['edit'] = true
         vm.formState = {
           pId: null,
           title: '',
@@ -16,7 +17,8 @@ const config = (vm: any): any => ({
           name: '',
           icon: '',
           isDisplay: true,
-          urlOrder: 0
+          urlOrder: 0,
+          menuId: 0
         }
       }
     },
@@ -24,8 +26,16 @@ const config = (vm: any): any => ({
       title: '删除',
       icon: 'DeleteOutlined',
       on: (selectedKeys: (number | string)[]) => {
-        console.log(111, selectedKeys)
-        console.log(234)
+        if (!selectedKeys.length) return
+        console.log(selectedKeys)
+        SystemApi.MenuDelete(selectedKeys[0]).then((res: any) => {
+          if (res.status === 'SUCCESS') {
+            vm.fetchMenuList()
+            message.success(res.data)
+          } else {
+            message.error(res.error)
+          }
+        })
       }
     }
   ],
@@ -80,10 +90,9 @@ const config = (vm: any): any => ({
               icon: 'EditOutlined',
               text: '编辑',
               on: (row: any) => {
-                vm.modalStatus['add'] = true
+                vm.modalStatus['edit'] = true
                 vm.formState = row.record
                 vm.formState.pId = [row.record.pId]
-                console.log(vm.formState)
               }
             }
           ]

@@ -36,6 +36,7 @@ export default defineComponent({
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             const IconComp = Icon[item.icon]
+            console.log(111111111, props.selectedKeys)
             return <Button v-slots={{ icon: () => <IconComp />, default: () => <span>{item.title}</span> }} onClick={ () => item.on && item.on(props.selectedKeys) } style={{ marginRight: '10px' }} />
           })}
         </div>
